@@ -55,7 +55,9 @@ module ActiveLoaders
       def to_datasource_select(result, klass, serializer = nil, serializer_assoc = nil, adapter = nil, datasource = nil)
         adapter ||= Datasource::Base.default_adapter
         serializer ||= get_serializer_for(klass, serializer_assoc)
-        if serializer._attributes.respond_to?(:keys)  # AMS 0.8
+        if serializer.respond_to?(:attributes) # AMS 0.10
+          result.concat(serializer.attributes)
+        elsif serializer._attributes.respond_to?(:keys)  # AMS 0.8
           result.concat(serializer._attributes.keys)
         else                                          # AMS 0.9
           result.concat(serializer._attributes)
